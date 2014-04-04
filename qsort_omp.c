@@ -1,4 +1,4 @@
-/* File: qsort_seq.c (Reagan Lopez for CS415/515)
+/* File: qsort_omp.c (Reagan Lopez for CS415/515)
 **
 ** Quicksort algorithm (openMP parallel version).
 **
@@ -8,12 +8,12 @@
 #include <stdio.h>
 #include <time.h>
 
-#define MIN_SIZE 10 
+#define MIN_SIZE 10
 
 int T = 2;
-int nthreads, tid;  
+int nthreads, tid;
 
-/* Swap two array elements 
+/* Swap two array elements
  */
 void swap(int *array, int i, int j)
 {
@@ -29,9 +29,9 @@ void bubble_sort(int *array, int low, int high)
 {
   if (low >= high) return;
   int i, j;
-  
+
   for (i = low; i <= high; i++)
-    for (j = i+1; j <= high; j++) 
+    for (j = i+1; j <= high; j++)
       if (array[i] > array[j])
 	swap(array, i, j);
 }
@@ -43,7 +43,7 @@ int partition(int *array, int low, int high)
 {
   /* Use the lowest element as pivot */
   int pivot = array[low], middle = low, i;
- 
+
   swap(array, low, high);
 
   for(i=low; i<high; i++) {
@@ -53,11 +53,11 @@ int partition(int *array, int low, int high)
     }
   }
   swap(array, high, middle);
-  
+
   return middle;
 }
- 
-/* Quicksort the array 
+
+/* Quicksort the array
  */
 void quicksort(int *array, int low, int high)
 {
@@ -67,10 +67,10 @@ void quicksort(int *array, int low, int high)
     bubble_sort(array, low, high);
     return;
   }
-  
+
   int middle = partition(array, low, high);
-	
-/*	
+
+/*
 	int start[2], end[2];
 	start[0] = low;
 	end[0] = middle - 1;
@@ -94,37 +94,37 @@ void quicksort(int *array, int low, int high)
 
 
 }
- 
+
 /* Main routine for testing quicksort
  */
 int main(int argc, char **argv)
 {
   int *array, N, i, j;
-  
+
 	/* check command line first */
 	if (argc < 2) {
 		printf ("Usage : qsort_seq <array_size>\n");
 		exit(0);
 	}
-	
+
 	if ((N=atoi(argv[1])) < 2) {
 		printf ("<array_size> must be greater than 2\n");
 		exit(0);
 	}
-	
+
 	if (argc == 2) {
 		printf("<T> not specified. Defaulting <T> to 1\n");
 		T = 1;
-	}  
-	
+	}
+
 	if ((argc > 2) && (T=atoi(argv[2])) < 1) {
 		 printf("<T> must not be < 1. Defaulting <T> to 1\n");
 		 T = 1;
-	} 
-	
+	}
+
 	//set the number of threads
 	omp_set_num_threads(T);
-	
+
   //printf("Create an array of %d randomized integers ...\n", N);
 
   /* init an array with values 1. N-1 in parallel*/
